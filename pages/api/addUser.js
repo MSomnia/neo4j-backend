@@ -9,6 +9,10 @@ export default function handler(req, res) {
         return res.status(400).json({ error: 'Message is missing' });
       }
 
+    if (req.method === 'OPTION'){
+        return res.status(200).end(); // End the response
+    }
+
       // Log the message or use it for further processing
       console.log('Received message:', message);
   
