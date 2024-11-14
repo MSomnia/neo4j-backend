@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     res.status(405).json({ message: 'Only GET requests are allowed' });
     return;
   }
-
+  console.log()
   const database = "neo4j"
   const session = driver.session({database});
   try {
@@ -18,7 +18,8 @@ export default async function handler(req, res) {
     res.status(200).json({ nodes });
   } catch (error) {
     console.error('Neo4j query error:', error);
-    res.status(500).json({ error: 'Failed to fetch data from Neo4j' });
+    res.status(500).json({ error });
+    // res.status(500).json({ error: 'Failed to fetch data from Neo4j' });
   } finally {
     // Close the session
     await session.close();
