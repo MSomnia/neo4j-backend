@@ -8,7 +8,8 @@ export default async function handler(req, res) {
     return;
   }
 
-  const session = driver.session();
+  const database = "note"
+  const session = driver.session({database});
   try {
     // Example Neo4j query to fetch nodes
     const result = await session.run('MATCH (n) RETURN n LIMIT 10');
