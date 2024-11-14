@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     return;
   }
 
-  const database = "note"
+  const database = "neo4j"
   const session = driver.session({database});
   try {
     // Example Neo4j query to fetch nodes
