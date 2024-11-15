@@ -20,10 +20,10 @@ export default async function handler(req, res) {
       if (!uni_name || !user_name || !user_email || !user_password) {
         return res.status(400).json({ error: 'Missing data' });
       }
-  
+      console.log(uni_name+user_name+user_email+user_password)
     //create user
     const user_query = `
-    MATCH (uni:university {name: $uni_name})
+    MATCH (uni:university {name: $uni_name}s)
     CREATE (usr:user {id: randomUUID(), name: $user_name, email: $user_email, password: $user_password})
     CREATE (usr)-[:ENROLLED_IN]->(uni)
     `;
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         res.status(500).json({ error: '[User]Failed to create user' });
       }
     }
-    res.status(200).json({ message: 'User created successfully', user: user_result });
+    return res.status(200).json({ message: 'User created successfully', user: user_result });
       // console.log('Received message:', message);
       // return res.status(200).json({ success: true, receivedMessage: message });
     }
