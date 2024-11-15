@@ -23,7 +23,7 @@ export default async function handler(req, res) {
       console.log(uni_name+user_name+user_email+user_password)
     //create user
     const user_query = `
-    MATCH (uni:university {name: $uni_name}s)
+    MATCH (uni:university {name: $uni_name})
     CREATE (usr:user {id: randomUUID(), name: $user_name, email: $user_email, password: $user_password})
     CREATE (usr)-[:ENROLLED_IN]->(uni)
     `;
