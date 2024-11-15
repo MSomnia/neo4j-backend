@@ -16,10 +16,10 @@ export default async function handler(req, res) {
       if (!uni_name || !user_name || !user_email || !user_password) {
         return res.status(400).json({ error: 'Missing data' });
       }
-      console.log(uni_name+user_name+user_email+user_password)
+      console.log("User created" + " "+ uni_name+" "+user_name+" "+user_email+" "+user_password)
     //create user
     const user_query = `
-    MATCH (uni:university {name: "Western University})
+    MATCH (uni:university {name: $uni_name})
     CREATE (usr:user {id: randomUUID(), name: $user_name, email: $user_email, password: $user_password})
     CREATE (usr)-[:ENROLLED_IN]->(uni)
     `;
