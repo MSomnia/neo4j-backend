@@ -12,15 +12,11 @@ export default async function handler(req, res) {
   
     if (req.method === 'POST') {
       // Handle the POST request
-      // const { message } = req.body;
-      // if (!message) {
-      //   return res.status(400).json({ error: 'Message is missing' });
-      // }
       const { uni_name, user_name, user_email, user_password } = req.body;
       if (!uni_name || !user_name || !user_email || !user_password) {
         return res.status(400).json({ error: 'Missing data' });
       }
-  
+      console.log("User created" + " "+ uni_name+" "+user_name+" "+user_email+" "+user_password)
     //create user
     const user_query = `
     MATCH (uni:university { : $uni_name})
@@ -30,7 +26,8 @@ export default async function handler(req, res) {
     try{
       const user_result = await runQuery(user_query, { uni_name, user_name, user_email, user_password });
       console.log('User created:', user_result);
-  
+      return res.status(200).json({ message: 'User created successfully', user: user_result });
+
     } catch(email_error){
       console.error(email_error)
       if (email_error.code === 'Neo.ClientError.Schema.ConstraintValidationFailed') {
@@ -40,7 +37,6 @@ export default async function handler(req, res) {
         res.status(500).json({ error: '[User]Failed to create user' });
       }
     }
-    res.status(200).json({ message: 'User created successfully', user: user_result });
       // console.log('Received message:', message);
       // return res.status(200).json({ success: true, receivedMessage: message });
     }
