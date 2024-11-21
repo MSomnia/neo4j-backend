@@ -16,19 +16,19 @@ dash.note.lat/api/getAllUni
 
 dash.note.lat/api/getANote
   - req: note_id
-  - res: success, data
+  - res: success, data[].{note_id, note_title, note_content, course_of_note, tag_name (this is an array), author_of_note, note_created_date}
 
 dash.note.lat/api/getAUserNotes
   - req: user_email
-  - res: success, data
+  - res: success, data[].{note_title, note_id, note_created_date, tag_name (this is an array) }
 
 dash.note.lat/api/getCourseOfNote
   - req: note_id
-  - res: success, data
+  - res: success, data[0].course_id
 
 dash.note.lat/api/getUniOfCourse
   - req: course_id
-  - res: success, data
+  - res: success, data[0].uni_name
 
 ## Add
 
