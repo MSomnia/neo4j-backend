@@ -1,10 +1,11 @@
-
 import { runQuery } from "../../lib/neo4j";
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
-    const user_email = req.body.user_email;
+    const user_email = req.query
     if(!user_email) { return res.status(400).json({ error: 'Missing data' });}
+
+    console.log("================"+user_email)
 
     const cypher = `
     MATCH (u:user {email: $user_email})-[:OWNED]->(n:note)-[:CONTAINS]->(t:tag)
