@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       MATCH (n:note)
       WITH u, c, COUNT(n) AS maxNoteId
       CREATE (newNote:note {
-        id: maxNoteId + 1, 
+        id: toString(maxNoteId + 1), 
         title: $note_title, 
         content: $note_content
       })
