@@ -7,7 +7,7 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Missing data' });
         }
 
-        const cypher = 'MATCH(n:note{id:$note_id})-[:CONTAINS]->(t:tag) RETURN t.name AS note_tag';
+        const cypher = 'MATCH(n:note{id:$note_id})-[:CONTAINS]->(t:tag) RETURN COLLECT(t.name) AS tag_name';
         try {
             const data = await runQuery(cypher,{note_id});
             res.status(200).json({success: true, data});
