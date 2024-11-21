@@ -10,7 +10,7 @@ export default async function handler(req, res) {
       }
 
   if (req.method === 'POST') {
-    const { user_email, course_id, note_title, note_content, note_tags } = req.body;
+    const { user_email, course_id, note_title, note_content, note_tags, note_created_time } = req.body;
 
     if (!user_email || !course_id || !note_title || !note_content || !Array.isArray(note_tags) || note_tags.length === 0) {
       return res.status(400).json({ success: false, message: 'Invalid request data' });
@@ -37,7 +37,8 @@ export default async function handler(req, res) {
       CREATE (newNote:note {
         id: toString(maxNoteId + 1), 
         title: $note_title, 
-        content: $note_content
+        content: $note_content,
+        date: date()
       })
       MERGE (u)-[:OWNED]->(newNote)
       MERGE (newNote)-[:TAKEN_IN]->(c)
@@ -46,7 +47,7 @@ export default async function handler(req, res) {
       UNWIND $note_tags AS tagName
       MERGE (t:tag {name: tagName})
       MERGE (newNote)-[:CONTAINS]->(t)
-      RETURN newNote.id AS note_id, newNote.title AS note_title;
+      RETURN newNote.id AS note_id, newNote.title AS note_title, newNote.date AS note_created_date;
     `;
 
     try {

@@ -7,8 +7,8 @@ export default async function handler(req, res) {
     if(!user_email) { return res.status(400).json({ error: 'Missing data' });}
 
     const cypher = `
-    MATCH (u:user {email: $user_email})-[:OWNED]->(n:note)
-    RETURN n.title AS note_title, n.id AS note_id;
+    MATCH (u:user {email: $user_email})-[:OWNED]->(n:note)-[:CONTAINS]->(t:tag)
+    RETURN n.title AS note_title, n.id AS note_id, n.date AS note_created_id, COLLECT(t.name) AS tag_name;
     `; 
 
     try {
