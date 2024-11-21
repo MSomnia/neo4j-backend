@@ -22,6 +22,7 @@ export default async function handler(req, res) {
     MATCH (uni:university {name: $uni_name})
     CREATE (usr:user {id: randomUUID(), name: $user_name, email: $user_email, password: $user_password})
     CREATE (usr)-[:ENROLLED_IN]->(uni)
+    RETURN usr.name AS user_name, usr.email AS user_email
     `;
     try{
       const user_result = await runQuery(user_query, { uni_name, user_name, user_email, user_password });
