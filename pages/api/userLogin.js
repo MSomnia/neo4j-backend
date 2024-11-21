@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     // Cypher query for user login
     const cypher = `
       MATCH (u:user {email: $user_email, password: $user_password})
-      RETURN u.name AS name, u.email AS email;
+      RETURN u.name AS user_name, u.email AS user_email;
     `;
 
     try {
