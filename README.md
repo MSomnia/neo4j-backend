@@ -3,7 +3,7 @@
 
 dash.note.lat/api/userLogin
   - req: user_email, user_password
-  - res: success (true or false), user (name, email)
+  - res: success (true or false), user (user_name, user_email)
 
 dash.note.lat/api/addUser
   - req: uni_name, user_name, user_email, user_password
