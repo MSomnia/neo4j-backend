@@ -12,6 +12,13 @@ export default async function handler(req, res) {
             'c.title AS course_of_note,COLLECT(t.name) AS tag_name,u.name AS author_of_note, n.date AS note_created_date';
         try {
             const data = await runQuery(cypher,{note_id});
+            data.forEach((note)=>{
+                if(note.note_created_date != null)
+                {
+                  const string_date = note.note_created_date.year.low + '-'+ note.note_created_date.month.low + '-'+note.note_created_date.day.low
+                  note.note_created_date = string_date
+                }
+              })
             res.status(200).json({success: true, data});
         } catch (error) {
             console.error('Error fetching data:', error);
