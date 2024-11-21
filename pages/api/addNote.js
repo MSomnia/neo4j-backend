@@ -10,7 +10,7 @@ export default async function handler(req, res) {
       }
 
   if (req.method === 'POST') {
-    const { user_email, course_id, note_title, note_content, note_tags, note_created_time } = req.body;
+    const { user_email, course_id, note_title, note_content, note_tags } = req.body;
 
     if (!user_email || !course_id || !note_title || !note_content || !Array.isArray(note_tags) || note_tags.length === 0) {
       return res.status(400).json({ success: false, message: 'Invalid request data' });
