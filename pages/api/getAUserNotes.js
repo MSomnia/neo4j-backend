@@ -2,7 +2,7 @@ import { runQuery } from "../../lib/neo4j";
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
-    const user_email = req.query
+    const user_email = req.query.email
     if(!user_email) { return res.status(400).json({ error: 'Missing data' });}
 
     console.log("================"+user_email)
@@ -22,6 +22,7 @@ export default async function handler(req, res) {
             note.note_created_date = string_date
           }
         })
+        console.log(data.length)
         res.status(200).json({success: true, data});
     }catch (error) {
         console.error('Error fetching data:', error);
