@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
     const cypher = `
     MATCH (u:user {email: $user_email})-[:OWNED]->(n:note)-[:CONTAINS]->(t:tag)
-    RETURN n.title AS note_title, n.id AS note_id, n.date AS note_created_id, COLLECT(t.name) AS tag_name;
+    RETURN n.title AS note_title, n.id AS note_id, n.date AS note_created_date, COLLECT(t.name) AS tag_name;
     `; 
 
     try {
