@@ -10,28 +10,48 @@ export default async function handler(req, res) {
       }
 
   if (req.method === 'POST') {
-    const { user_email, course_id, note_title, note_content, note_tags } = req.body;
+    const { user_email, course_id, course_title, note_title, note_content, note_tags } = req.body;
 
-    if (!user_email || !course_id || !note_title || !note_content || !Array.isArray(note_tags) || note_tags.length === 0) {
+    if (!user_email || !course_id || !course_title || !note_title || !note_content || !Array.isArray(note_tags) || note_tags.length === 0) {
       return res.status(400).json({ success: false, message: 'Invalid request data' });
     }
 
     //Validating the course existence
     const validateCypher = `
-    MATCH (c:course {id: $course_id})
+    MATCH (u:user {email: $user_email})-[:ENROLLED_IN]->(uni:university)
+    MATCH (c:course {id: $course_id+"@"+uni.domain})
     RETURN COUNT(c) > 0 AS exists;
     `;
 
-    const courseRes = await runQuery(validateCypher, { course_id});
+    const courseRes = await runQuery(validateCypher, { user_email, course_id});
 
     if (!courseRes.length > 0 || !courseRes[0].exists) {
         console.log("Course does not exist. "+course_id);
-        return res.status(404).json({ success: false, message: 'Course not found' });
+        const addCourseCypher = `
+        MATCH (u:user {email: $user_email})-[:ENROLLED_IN]->(uni:university)
+        CREATE (c:course {id: $course_id+"@"+uni.domain, title: $course_title})
+        CREATE(c)-[:BELONGS_TO]->(uni)
+        RETURN c.id;
+        `
+        try{
+          const addRes = await runQuery(addCourseCypher, {user_email, course_id, course_title});
+          if(addRes.length===0)
+          {
+            console.log("Can not create the course "+ course_id);
+            return res.status(404).json({ success: false, message: 'Can not create the course '+course_id });
+          }
+
+        }catch(error)
+        {
+          return res.status(404).json({ success: false, message: 'Can not create the course '+course_id });
+        }
+
+        //return res.status(404).json({ success: false, message: 'Course not found' });
     }
 
     const cypher = `
       // Create a new note node with an ascending id
-      MATCH (u:user {email: $user_email}), (c:course {id: $course_id})
+      MATCH (u:user {email: $user_email})-[:ENROLLED_IN]->(uni:university), (c:course {id: $course_id+"@"+uni.domain})
       MATCH (n:note)
       WITH u, c, COUNT(n) AS maxNoteId
       CREATE (newNote:note {
@@ -54,13 +74,14 @@ export default async function handler(req, res) {
       const data = await runQuery(cypher, {
         user_email,
         course_id,
+        course_title,
         note_title,
         note_content,
         note_tags,
       });
 
       if (data.length === 0) {
-        res.status(404).json({ success: false, message: 'User or course not found' });
+        res.status(404).json({ success: false, message: 'Can not create the note' });
       } else {
         res.status(201).json({ success: true, note: data[0] });
       }
