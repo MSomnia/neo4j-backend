@@ -52,11 +52,9 @@ export default async function handler(req, res) {
 
     const cypher = `
       // Create a new note node with an ascending id
-      MATCH (u:user {email: $user_email})-[:ENROLLED_IN]->(uni:university), (c:course {id: $course_id+"@"+uni.domain})
-      MATCH (n:note)
-      WITH u, c, COUNT(n) AS maxNoteId
+      MATCH (u:user {email: $user_email})-[:ENROLLED_IN]->(uni:university), (c:course {id: $course_id + "@" + uni.domain})
       CREATE (newNote:note {
-        id: toString(maxNoteId + 1), 
+        id: randomUUID(), 
         title: $note_title, 
         content: $note_content,
         date: date()
