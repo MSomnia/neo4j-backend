@@ -18,7 +18,9 @@ export default async function handler(req, res) {
 
         const query = `
         MATCH (u:user {email: $email})-[:ENROLLED_IN]->(uni:university)
-        RETURN u.name AS user_name, u.email AS user_email, uni.name AS university_name
+        OPTIONAL MATCH (u)-[:OWNED]->(:note)-[:TAKEN_IN]->(c:course)
+        RETURN u.name AS user_name, u.email AS user_email, uni.name AS university_name,
+        COLLECT(DISTINCT c.id) AS course_ids
         `;
 
         try {
@@ -30,7 +32,10 @@ export default async function handler(req, res) {
 
             return res.status(200).json({ 
                 success: true,
-                user: result[0]
+                user: {
+                    ...result[0],
+                    course_ids: result[0].course_ids || []
+                }
             });
 
         } catch (error) {
