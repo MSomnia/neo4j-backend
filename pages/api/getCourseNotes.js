@@ -2,14 +2,15 @@ import { runQuery } from "../../lib/neo4j";
 
 export default async function handler(req, res) {
     if (req.method === 'GET') {
-        const { course_id } = req.body;
+        const course_id = req.query.course_id;
         if(!course_id){
             return res.status(400).json({ error: 'Missing data' });
         }
 
         const cypher = `MATCH(n:note)-[:TAKEN_IN]->(c:course {id: $course_id}) 
-        RETURN n.id AS note_id, n.title AS note_title,n.content AS note_content,
-        c.title AS course_of_note, n.date AS note_created_date;`
+        RETURN n.id AS note_id, n.title AS note_title, n.content AS note_content,
+        c.title AS course_of_note, c.id AS course_id, c.title AS course_name,
+        n.date AS note_created_date;`
         try {
             const data = await runQuery(cypher,{course_id});
             data.forEach((note)=>{
